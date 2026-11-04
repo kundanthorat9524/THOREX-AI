@@ -14,3 +14,4 @@ venv/
 .vscode/
 .DA_Store
 thoex_ai.db
+gunicorn
