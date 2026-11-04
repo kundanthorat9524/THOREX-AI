@@ -1,0 +1,16 @@
+# secrets - NEVER push these!
+.env
+#.db
+#.sqlite
+#.sqlite3
+
+#Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+#IDE and OS
+.vscode/
+.DA_Store
+thoex_ai.db

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THOREX AI</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-wand-magic-sparkles logo-sparkle"></i>
+                    <span>THOREX AI</span>
+                </div>
+                <button class="icon-btn sidebar-close-btn" id="close-sidebar-btn" title="Collapse sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+            <button class="new-chat-btn" id="new-chat-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>New chat</span>
+            </button>
+
+            <!-- Navigation switcher -->
+            <div class="sidebar-nav">
+                <button class="sidebar-nav-item active" id="sidebar-nav-chat" title="AI Chat Assistant">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Chat Assistant</span>
+                </button>
+                <button class="sidebar-nav-item" id="sidebar-nav-video" title="AI Video Generator">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Video Generator</span>
+                </button>
+            </div>
+
+            <div class="sidebar-history-container" id="sidebar-history-container">
+                <div class="history-label">Recent</div>
+                <div class="history-list" id="history-list">
+                    <!-- Session items will be dynamically injected here -->
+                    <div class="history-loading">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading...
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="footer-item" id="settings-btn">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </button>
+                <div class="connection-status-container">
+                    <div class="status-dot online" id="status-dot"></div>
+                    <span id="status-text">Connected</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="icon-btn hamburger-btn" id="hamburger-btn" title="Expand sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="model-selector">
+                        <span>THOREX AI</span>
+                        <div class="select-wrapper">
+                            <select id="chat-model-select" class="header-model-select">
+                                <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                                <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-chevron"></i>
+                        </div>
+                    </div>
+                    <div class="language-selector">
+                        <div class="select-wrapper">
+                            <i class="fa-solid fa-language select-icon"></i>
+                            <select id="language-select" class="header-language-select"
+                                title="Choose Interface Language">
+                                <option value="en" selected>English</option>
+                                <option value="hi">हिन्दी</option>
+                                <option value="mr">मराठी</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                                <option value="ar">العربية</option>
+                                <option value="zh">中文</option>
+                                <option value="ja">日本語</option>
+                                <option value="ru">Русский</option>
+                                <option value="pt">Português</option>
+                                <option value="bn">বাংলা</option>
+                                <option value="ta">தமிழ்</option>
+                                <option value="te">తెలుగు</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-chevron"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn header-action-btn" id="header-settings-btn" title="API Key Settings">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                    <div class="auth-header-container" id="auth-header-container">
+                        <button class="btn btn-auth-login" id="header-login-btn">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>Login / Sign Up</span>
+                        </button>
+                        <div class="user-menu-wrapper" id="user-menu-wrapper" style="display: none;">
+                            <div class="user-avatar-header" id="user-avatar-btn" title="User Profile">T</div>
+                            <div class="user-dropdown-menu" id="user-dropdown-menu" style="display: none;">
+                                <div class="user-info-header">
+                                    <div class="user-info-name" id="dropdown-username">User</div>
+                                    <div class="user-info-email" id="dropdown-email"></div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="logout-btn">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    <span>Log Out</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Chat Container -->
+            <div class="chat-container" id="chat-container">
+                <!-- Welcome / Intro Screen -->
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-header">
+                        <h1 class="gradient-text" id="welcome-title">Hello.</h1>
+                        <h2 class="sub-greeting" id="welcome-subtitle">How can I help you today?</h2>
+                    </div>
+
+                    <div class="suggestions-grid">
+                        <div class="suggestion-card" data-prompt="Help me write Python code to build a web scraper.">
+                            <div class="suggestion-text" id="suggest-text-1">Write a Python scraper script for data
+                                extraction</div>
+                            <div class="suggestion-icon"><i class="fa-solid fa-code"></i></div>
+                        </div>
+                        <div class="suggestion-card"
+                            data-prompt="Explain the difference between SQL and NoSQL databases in simple terms.">
+                            <div class="suggestion-text" id="suggest-text-2">Explain SQL vs NoSQL databases in simple
+                                terms</div>
+                            <div class="suggestion-icon"><i class="fa-solid fa-database"></i></div>
+                        </div>
+                        <div class="suggestion-card"
+                            data-prompt="Give me 5 business ideas incorporating AI in local services.">
+                            <div class="suggestion-text" id="suggest-text-3">Brainstorm AI business ideas for local
+                                services</div>
+                            <div class="suggestion-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                        </div>
+                        <div class="suggestion-card"
+                            data-prompt="Can you draft a professional email requesting a project deadline extension?">
+                            <div class="suggestion-text" id="suggest-text-4">Draft a professional email for a deadline
+                                extension</div>
+                            <div class="suggestion-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages List -->
+                <div class="messages-list" id="messages-list" style="display: none;">
+                    <!-- Message items dynamically injected here -->
+                </div>
+            </div>
+
+            <!-- Input Bar Area -->
+            <div class="input-area-container" id="chat-input-area">
+                <div class="input-box-wrapper">
+                    <textarea id="chat-input" placeholder="Type a message to THOREX AI..." rows="1"></textarea>
+                    <div class="input-actions">
+                        <button class="input-action-btn" id="voice-btn" title="Use voice">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button class="send-btn" id="send-btn" title="Send message" disabled>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="disclaimer-text" id="disclaimer-text">
+                    THOREX AI may display inaccurate info, so double-check responses.
+                </div>
+            </div>
+
+            <!-- Video Generator Container -->
+            <div class="video-container" id="video-container" style="display: none;">
+                <div class="video-generator-layout">
+                    <!-- Left side: Generation Form -->
+                    <div class="video-form-panel">
+                        <div class="panel-header">
+                            <h2 class="gradient-text" id="video-title">Create AI Videos</h2>
+                            <p class="panel-subtitle" id="video-subtitle">Turn your imagination into high-quality
+                                cinematic clips using Google Veo</p>
+                        </div>
+
+                        <!-- YouTube Format Quick Presets -->
+                        <div class="youtube-presets-container">
+                            <label class="preset-label"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
+                                YouTube Video Creator</label>
+                            <div class="preset-buttons">
+                                <button type="button" class="preset-btn active" id="preset-yt-short">
+                                    <i class="fa-solid fa-mobile-screen"></i> Shorts (9:16)
+                                </button>
+                                <button type="button" class="preset-btn" id="preset-yt-video">
+                                    <i class="fa-solid fa-tv"></i> Video (16:9)
+                                </button>
+                                <button type="button" class="preset-btn ai-enhance-btn" id="ai-script-gen-btn"
+                                    title="Auto AI Script & Prompt Enhancer">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Auto-Enhance
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="video-prompt-input" id="video-prompt-label">Prompt</label>
+                            <textarea id="video-prompt-input"
+                                placeholder="A cinematic close-up shot of a golden retriever playing in a field of sunflowers..."
+                                rows="3"></textarea>
+                        </div>
+
+                        <!-- Generated YouTube Script Box -->
+                        <div class="yt-script-card" id="yt-script-card" style="display: none;">
+                            <div class="yt-script-header">
+                                <i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
+                                <span id="yt-script-title">Generated YouTube Title</span>
+                            </div>
+                            <p class="yt-script-text" id="yt-script-text">Generated Narration Script Hook...</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label for="video-model-select" id="video-model-label">Veo Model</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="video-model-select">
+                                        <option value="veo-3.1-fast-generate-preview" selected>Veo 3.1 Fast (Preview)
+                                        </option>
+                                        <option value="veo-3.1-generate-preview">Veo 3.1 Quality (Preview)</option>
+                                        <option value="veo-2.0-generate-001">Veo 2.0 (Stable)</option>
+                                        <option value="Qwen/Qwen-Image">Qwen Image (Hugging Face)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group half-width">
+                                <label for="video-aspect-select">Aspect Ratio</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="video-aspect-select">
+                                        <option value="16:9" selected>16:9 Landscape</option>
+                                        <option value="9:16">9:16 Portrait</option>
+                                        <option value="1:1">1:1 Square</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sandbox-toggle-container">
+                            <div class="sandbox-text">
+                                <span class="sandbox-title"><i class="fa-solid fa-flask"></i> Sandbox Simulation
+                                    Mode</span>
+                                <span class="sandbox-desc">Simulate video generation (No API Key or quota
+                                    required)</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="sandbox-mode-toggle" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <button class="generate-btn" id="generate-video-btn">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Generate Video</span>
+                        </button>
+                    </div>
+
+                    <!-- Right side: Video Player & History -->
+                    <div class="video-preview-panel">
+                        <!-- Active Generation Status / Video player -->
+                        <div class="video-preview-card">
+                            <div class="preview-placeholder" id="preview-placeholder">
+                                <i class="fa-solid fa-film placeholder-icon"></i>
+                                <p>Your generated video will appear here</p>
+                            </div>
+
+                            <!-- Generation Progress state -->
+                            <div class="generation-progress-box" id="generation-progress-box" style="display: none;">
+                                <div class="loader-spinner">
+                                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                </div>
+                                <div class="progress-details">
+                                    <h4 id="progress-status-title">Starting generation...</h4>
+                                    <p id="progress-status-desc">Submitting prompt to Google AI Studio</p>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" id="progress-bar-fill" style="width: 5%;"></div>
+                                    </div>
+                                    <span class="progress-time-elapsed" id="progress-time-elapsed">Elapsed: 0s</span>
+                                </div>
+                            </div>
+
+                            <!-- Media Player -->
+                            <div class="generated-video-box" id="generated-video-box" style="display: none;">
+                                <video id="preview-video-player" controls loop></video>
+                                <img id="preview-image-player"
+                                    style="display: none; width: 100%; border-radius: 8px; margin-bottom: 15px;"
+                                    alt="Generated visual content" />
+                                <div class="video-actions">
+                                    <a href="#" class="btn btn-primary" id="download-video-btn" download>
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- History Gallery -->
+                        <div class="gallery-section">
+                            <h3>Generation History</h3>
+                            <div class="gallery-grid" id="gallery-grid">
+                                <!-- Generated item cards injected dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="close-modal-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="api-key-input">Google AI Studio API Key</label>
+                    <p class="form-desc">Provide your Gemini API key from Google AI Studio. This key is stored securely
+                        in your local database.</p>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" placeholder="Enter API Key (AIzaSy...)">
+                        <button class="toggle-password-btn" id="toggle-password-btn">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="key-status" id="key-status-indicator">
+                    <i class="fa-solid fa-circle-info"></i> <span>Checking configuration...</span>
+                </div>
+
+                <div class="form-group" style="margin-top: 18px;">
+                    <label for="hf-key-input">Hugging Face API Key</label>
+                    <p class="form-desc">Provide your Hugging Face API key for visual/image generation models. Stored
+                        securely
+                        in your local database.</p>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="hf-key-input" placeholder="Enter Hugging Face Token (hf_...)">
+                        <button class="toggle-password-btn" id="toggle-hf-password-btn">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="key-status" id="hf-key-status-indicator">
+                    <i class="fa-solid fa-circle-info"></i> <span>Checking configuration...</span>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-settings-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-settings-btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login / Sign Up) -->
+    <div class="modal-overlay" id="auth-modal" style="display: none;">
+        <div class="modal-card auth-modal-card">
+            <div class="modal-header">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login-btn">Login</button>
+                    <button class="auth-tab" id="tab-register-btn">Sign Up</button>
+                </div>
+                <button class="close-modal-btn" id="close-auth-modal-btn">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="auth-username">Username</label>
+                        <input type="text" id="auth-username" placeholder="Enter your username" required
+                            autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Password</label>
+                        <input type="password" id="auth-password" placeholder="Enter your password" required
+                            autocomplete="current-password">
+                    </div>
+                    <div class="auth-error-msg" id="login-error-msg" style="display: none;"></div>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit-login-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i> Log In
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" placeholder="Choose a username" required
+                            autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email (Optional)</label>
+                        <input type="email" id="reg-email" placeholder="name@example.com" autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" placeholder="Create a password" required
+                            autocomplete="new-password">
+                    </div>
+                    <div class="auth-error-msg" id="register-error-msg" style="display: none;"></div>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit-register-btn">
+                        <i class="fa-solid fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="/app.js"></script>
+</body>
+
+</html>
